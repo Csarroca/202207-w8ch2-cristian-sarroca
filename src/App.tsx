@@ -18,9 +18,9 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const escroto = await getStarships();
-      console.log(escroto);
-      setData(escroto as Istarships);
+      const naves = await getStarships();
+      console.log(naves);
+      setData(naves as Istarships);
     })();
   }, [getStarships]);
 
