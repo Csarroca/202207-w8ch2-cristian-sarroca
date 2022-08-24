@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 interface Istarships {
   count: number;
   starships: string[];
@@ -6,21 +8,26 @@ interface dataShips {
   starship_class: string;
 }
 
-const useAPI = () => {
-  const url = process.env.REACT_APP_API_URL as string;
-  const allUrls: string[] = [
-    `${url}?page=1`,
-    `${url}?page=2`,
-    `${url}?page=3`,
-    `${url}?page=4`,
-  ];
-  const starshipsFinal: Istarships = {
-    count: 0,
-    starships: [],
-  };
+// useCallback(() => {
+//   (async () => {})();
+// }, []);
 
-  const getStarships = async () => {
-    let data;
+const url = process.env.REACT_APP_API_URL as string;
+
+const allUrls: string[] = [
+  `${url}?page=1`,
+  `${url}?page=2`,
+  `${url}?page=3`,
+  `${url}?page=4`,
+];
+
+const useAPI = () => {
+  const getStarships = useCallback(async () => {
+    const starshipsFinal: Istarships = {
+      count: 0,
+      starships: [],
+    };
+
     try {
       await Promise.all(
         allUrls.map(async (url: string) => {
@@ -30,6 +37,7 @@ const useAPI = () => {
           const { count } = data;
           starshipsFinal.count = count;
           const starships = data.results;
+
           starships.forEach((element: dataShips) => {
             starshipsFinal.starships.push(element.starship_class);
           });
@@ -38,9 +46,10 @@ const useAPI = () => {
     } catch (error) {
       return error;
     }
-    return data;
-  };
-  return { getStarships, starshipsFinal };
+    return starshipsFinal;
+  }, []);
+
+  return { getStarships };
 };
 
 export default useAPI;
